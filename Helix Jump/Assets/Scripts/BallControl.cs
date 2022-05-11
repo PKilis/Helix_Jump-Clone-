@@ -9,7 +9,6 @@ public class BallControl : MonoBehaviour
 
     private bool ignoreNextCollision;
     private bool ignoreNextScore;
-    private bool isItCollided;
 
     private readonly int forceImpulse = 6;
     static public int score;
@@ -31,13 +30,7 @@ public class BallControl : MonoBehaviour
     {
         if (collision.gameObject)
         {
-            isItCollided = true;
             CatchCircles(collision);
-        }
-        else
-        {
-            isItCollided = false;
-           
         }
 
         string objectTag = collision.gameObject.tag;
@@ -51,7 +44,7 @@ public class BallControl : MonoBehaviour
             //Topun çarpmasý gereken renge çarpýnca olacaklar.
             case "FriendRing":
                 ballRb.AddForce(Vector3.up * forceImpulse, ForceMode.Impulse);
-                GameObject tempObject = Instantiate(sparyy, new Vector3(transform.position.x, transform.position.y - 0.123f, transform.position.z), Quaternion.Euler(-90, 0f, 0f));
+                GameObject tempObject = Instantiate(sparyy, new Vector3(transform.position.x, transform.position.y - 0.120f, transform.position.z), Quaternion.Euler(-90, 0f, 0f));
                 tempObject.transform.SetParent(collision.transform);
                 gameManager.bounceSound.Play();
                 Handheld.Vibrate();
@@ -83,12 +76,7 @@ public class BallControl : MonoBehaviour
         {
             return;
         }
-        if (isItCollided)
-        {
-            //CatchCircles(Collision);
-            isItCollided = false;
 
-        }
         DropCircles();
         score++;
         gameManager.scoreIncreaseSound.Play();
@@ -122,24 +110,25 @@ public class BallControl : MonoBehaviour
     }
 
     private void CatchCircles(Collision collis) // Platformdaki tüm objeleri yakalýyor.
-     {
-         for (int i = 0; i < tempObject.Length; i++)
-         {
-             GameObject myTemp = tempObject[i] = collis.transform.parent.GetChild(i).gameObject;
-         }
-     }
+    {
+        for (int i = 0; i < tempObject.Length; i++)
+        {
+            GameObject myTemp = tempObject[i] = collis.transform.parent.GetChild(i).gameObject;
+        }
+    }
 
     private void DropCircles() // Platformdaki yakalanan tüm objelere Rb atayýp daðýtýyor.
     {
         for (int i = 0; i < tempObject.Length; i++)
-        {       
+        {
             if (tempObject[i].gameObject != null && !tempObject[i].GetComponent<Rigidbody>())
             {
                 Rigidbody tempRb = tempObject[i].AddComponent<Rigidbody>().GetComponent<Rigidbody>();
-                tempRb.AddExplosionForce(30, transform.position, 20, .001f, ForceMode.Impulse);
+                tempRb.AddExplosionForce(10, transform.position, 20, .01f, ForceMode.Impulse);
+                tempRb.constraints = RigidbodyConstraints.FreezePositionY;
             }
-
-            Destroy(tempObject[1].transform.parent.gameObject, 1.5f);
+            
+            Destroy(tempObject[1].transform.parent.gameObject, .7f);
         }
     }
 }
