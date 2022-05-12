@@ -47,7 +47,7 @@ public class BallControl : MonoBehaviour
                 GameObject tempObject = Instantiate(sparyy, new Vector3(transform.position.x, transform.position.y - 0.120f, transform.position.z), Quaternion.Euler(-90, 0f, 0f));
                 tempObject.transform.SetParent(collision.transform);
                 gameManager.bounceSound.Play();
-                Handheld.Vibrate();
+                Vibration.Vibrate(.5f);
                 break;
             //Topun çarpmamasý gereken renge çarpýnca olacaklar.
             case "EnemyRing":
@@ -80,7 +80,7 @@ public class BallControl : MonoBehaviour
         DropCircles();
         score++;
         gameManager.scoreIncreaseSound.Play();
-        Handheld.Vibrate();
+        Vibration.Vibrate(.5f);
         gameManager.ScoreWrite();
     }
 
